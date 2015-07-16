@@ -1,0 +1,72 @@
+<form runat="server">
+用户名：<asp:TextBox ID="UserName" runat="server" onblur="checkUserName();"></asp:TextBox>
+</form>
+
+<asp:Button ID="submit" runat="server" Text="提交" onclick="submit_Click" onclientclick="return checkForm()" />
+
+<script type="text/javascript">
+
+  function checkUserName() {
+
+  var u = $("#UserName").val();
+
+  var unLen = u.replace(/[^\x00-\xff]/g, "*").length;
+  if (unLen < 2) {
+  $("#yhm").html("用户名小于2个字符");
+  return false;
+  }
+  else if (unLen > 20) {
+  $("#yhm").html("用户名大于20个字符");
+  return false;}
+  var unLen = u.replace(/\d+/g, "").length;
+  if (unLen < 2) {
+  $("#yhm").html("不能使用纯数字注册");
+  return false;}
+  var usernamepattern = /^[a-zA-Z0-9_\u4e00-\u9fa5]{2,20}$/;
+  if (!usernamepattern.test(u)) {
+  $("#yhm").html("用户名含有非法字符");
+  return false;
+ }
+  aaa();
+  return true;    
+}	
+</script>
+
+<script type="text/javascript">
+  function checkForm()  {
+  if (!checkUserName())  {
+  return false; }
+  }	
+</script>
+
+<script type="text/javascript">
+
+  function aaa() {
+  name = document.getElementById("UserName").value;
+  try {
+  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  catch (e) {
+  try {
+  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+  }
+  catch (e) {
+  }
+  }
+  xmlhttp.onreadystatechange = test;
+  xmlhttp.open("post", "Ajax.ashx", true);
+  xmlhttp.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+  xmlhttp.send("username=" + name);
+  }
+  function test() {
+  if (xmlhttp.readystate == 4) {
+  if (xmlhttp.status == 200) {
+
+  if (xmlhttp.responseText == 0) {
+  $("#yhm").html("用户名已存在");
+  }
+  else if (xmlhttp.responseText == 1) {
+  $("#yhm").html("可以");
+    
+  } } } }
+</script>   
